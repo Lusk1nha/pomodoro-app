@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from "./components/Header/Header";
+
+import { ClockChooser } from "./components/ClockChooser/ClockChooser";
+import { Clock } from "./components/Clock/Clock";
+
+import { SettingsIcon } from "./shared/assets/SettingsIcon.tsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+  function handleSettingsModal() {
+    console.log("Settings modal opened");
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="bg-primary w-full h-screen">
+      <Header title="pomodoro" />
+
+      <main className="flex flex-col gap-12">
+        <ClockChooser />
+        <Clock />
+      </main>
+
+      <footer className="flex flex-col items-center justify-center pt-24">
+        <button
+          aria-label="Open settings modal"
+          title="Click to open settings modal"
+          className="w-7 h-7  fill-settingsText hover:fill-settingsHoverText transition"
+          type="button"
+          onClick={handleSettingsModal}
+        >
+          <SettingsIcon />
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
