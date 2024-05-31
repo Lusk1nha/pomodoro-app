@@ -12,6 +12,7 @@ export default {
         modalButton: "rgba(0, 0, 0, 0.40)",
         modalFieldLabel: "rgba(0, 0, 0, 0.40)",
         modalApplyButton: "#F87070",
+        modalApplyButtonHover: "#ec9999",
 
         // Principal colors
         primary: "#1E213F",
@@ -39,12 +40,32 @@ export default {
         settingsText: "#d7e0ff66",
         settingsHoverText: "#D7E0FF",
 
-        // Input Colors
+        // Slider Input Colors
         slider: "#EFF1FA",
         sliderFont: "#1E213F",
+        sliderArrow: "rgba(30, 33, 63, 0.25)",
+        sliderArrowHover: "#1E213F",
+
+        // Font Button Colors
+        kumbhSansPrimary: "#161932",
+        kumbhSansText: "#FFFFFF",
+        robotoSlabPrimary: "#EFF1FA",
+        robotoSlabText: "#1e213fb8",
+        spaceMonoPrimary: "#EFF1FA",
+        spaceMonoText: "#1e213fb8",
+
+        // Color Input colors
+        redPrimary: "#F87070",
+        greenPrimary: "#70F3F8",
+        purplePrimary: "#D881F8",
       },
       dropShadow: {
         clock: ["-20px -20px 25px #272C5A", "20px 20px 25px #121530"],
+      },
+      fontFamily: {
+        KumbhSans: ["Kumbh Sans", "sans-serif"],
+        RobotoSlab: ["Roboto Slab", "serif"],
+        SpaceMono: ["Space Mono", "monospace"],
       },
     },
   },

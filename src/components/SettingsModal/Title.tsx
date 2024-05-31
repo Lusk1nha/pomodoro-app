@@ -6,7 +6,7 @@ function Title(props: ITitleProps) {
   const { title } = props;
 
   return (
-    <div className="w-full flex items-center justify-center md:justify-start pb-4">
+    <div className="w-full flex items-center justify-center md:justify-start">
       <h5
         title={title}
         aria-label={"Modal title with name: " + title}

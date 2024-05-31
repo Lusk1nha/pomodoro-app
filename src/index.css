@@ -11,4 +11,11 @@
   font-family: "Kumbh Sans", sans-serif;
 }
 
+/* Remove number input arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 @tailwind utilities;

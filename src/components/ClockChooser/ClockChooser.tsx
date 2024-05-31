@@ -1,38 +1,82 @@
 import classNames from "classnames";
-import { useState } from "react";
 
-const ClockTypes = ["pomodoro", "short break", "long break"];
+import {
+  ClockColors,
+  ClockFonts,
+  ClockTypes,
+  useClockStore,
+} from "../../shared/stores/clock-store";
+import { useFormContext } from "react-hook-form";
 
 function ClockChooser() {
-  const [currentValue, setCurrentValue] = useState("pomodoro");
+  const { type, font, color, setState, setType } = useClockStore();
+  const { setValue } = useFormContext();
 
-  function handleClockTypeChange(value: string) {
-    setCurrentValue(value);
+  function handleClick(value: ClockTypes) {
+    setValue("type", value);
+
+    setState("start");
+    setType(value);
   }
 
   return (
     <section className="w-full flex items-center justify-center px-6 z-10">
       <div className="bg-chooser w-[360px] h-16 rounded-[31.5px] flex items-center justify-between p-2">
-        {ClockTypes.map((type) => (
-          <Button
-            key={type}
-            text={type}
-            isActive={type === currentValue}
-            handleClick={handleClockTypeChange}
-          />
-        ))}
+        <Button
+          name="pomodoro"
+          text={"pomodoro"}
+          font={font}
+          color={color}
+          isActive={"pomodoro" === type}
+          handleClick={handleClick}
+        />
+        <Button
+          name="shortBreak"
+          text={"short break"}
+          font={font}
+          color={color}
+          isActive={"shortBreak" === type}
+          handleClick={handleClick}
+        />
+
+        <Button
+          name="longBreak"
+          text={"long break"}
+          font={font}
+          color={color}
+          isActive={"longBreak" === type}
+          handleClick={handleClick}
+        />
       </div>
     </section>
   );
 }
 
 interface IButtonProps {
+  name: ClockTypes;
   text: string;
+  font: ClockFonts;
+  color: ClockColors;
   isActive: boolean;
-  handleClick: (value: string) => void;
+  handleClick: (clock: ClockTypes) => void;
 }
 function Button(props: IButtonProps) {
-  const { text, isActive, handleClick } = props;
+  const { name, text, font, color, isActive, handleClick } = props;
+
+  const fonts = {
+    KumbhSans: "font-KumbhSans",
+    RobotoSlab: "font-RobotoSlab",
+    SpaceMono: "font-SpaceMono",
+  };
+
+  const colors = {
+    red: "bg-redPrimary text-chooserActiveText",
+    green: "bg-greenPrimary text-chooserActiveText",
+    purple: "bg-purplePrimary text-chooserActiveText",
+  };
+
+  const currentColor = colors[color];
+  const currentFont = fonts[font];
 
   return (
     <button
@@ -40,11 +84,12 @@ function Button(props: IButtonProps) {
       aria-label="Choose clock type for the session"
       className={classNames(
         "h-12 text-xs text-choosertext font-bold rounded-[26.5px] px-6 transition",
+        currentFont ? currentFont : "",
         isActive
-          ? "bg-chooserActiveButton text-chooserActiveText"
+          ? currentColor
           : "bg-chooserButton text-chooserInactiveText hover:text-chooserTextHover"
       )}
-      onClick={() => handleClick(text)}
+      onClick={() => handleClick(name)}
     >
       {text}
     </button>
