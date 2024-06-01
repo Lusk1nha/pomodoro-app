@@ -7,7 +7,7 @@ function Logo(props: ILogoProps) {
     <h1
       title="Site name"
       aria-label="Site name"
-      className="text-title text-2xl font-bold"
+      className="text-title text-2xl md:text-[32px] font-bold"
     >
       {props.title}
     </h1>

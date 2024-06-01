@@ -17,7 +17,7 @@ function Progress({ total }: IProgressProps) {
   const currentColor = colors[color] || "stroke-redPrimary";
 
   const STROKE_DASHARRAY = 1075;
-  
+
   // Inverter o cálculo do offset para que o progresso seja contado de 0 a 100%
   const strokeDashoffset = STROKE_DASHARRAY - (STROKE_DASHARRAY * total) / -100;
 
