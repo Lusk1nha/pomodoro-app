@@ -7,27 +7,35 @@ import { Signature } from "../Signature/Signature.tsx";
 import { SettingsButton } from "../SettingsButton/SettingsButton.tsx";
 import { SettingsModal } from "../SettingsModal/SettingsModal.tsx";
 
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { IClockStore, useClockStore } from "../../shared/stores/clock-store.ts";
+import { useModalStore } from "../../shared/stores/modal-store.ts";
+import { useEffect, useState } from "react";
 
 export interface AppFormSchema extends IClockStore {}
 
 function App() {
-  const [settingsOpened, setSettingsOpened] = useState(false);
+  const { modes, color, font, type } = useClockStore();
+  const { currentModalName, openModal, closeModal } = useModalStore();
 
-  const { color, font, modes, type } = useClockStore();
+  const [minutes, setMinutes] = useState<number>((modes as any)[type]);
+  const [seconds, setSeconds] = useState<number>(0);
 
   const formInstance = useForm<AppFormSchema>({
     defaultValues: { color, font, modes, type },
   });
 
+  useEffect(() => {
+    setMinutes((modes as any)[type]);
+    setSeconds(0);
+  }, [modes, type]);
+
   function handleOpenSettings() {
-    setSettingsOpened(true);
+    openModal("settings");
   }
 
   function handleCloseSettings() {
-    setSettingsOpened(false);
+    closeModal();
   }
 
   return (
@@ -39,7 +47,13 @@ function App() {
 
         <main className="flex flex-col gap-12">
           <ClockChooser />
-          <Clock />
+
+          <Clock
+            minutes={minutes}
+            setMinutes={setMinutes}
+            seconds={seconds}
+            setSeconds={setSeconds}
+          />
 
           <SettingsButton onOpen={handleOpenSettings} />
         </main>
@@ -48,7 +62,7 @@ function App() {
           <Signature />
         </footer>
 
-        {settingsOpened ? (
+        {currentModalName === "settings" ? (
           <SettingsModal onClose={handleCloseSettings} />
         ) : null}
       </div>

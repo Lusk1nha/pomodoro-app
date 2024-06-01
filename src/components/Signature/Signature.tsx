@@ -20,7 +20,7 @@ function Signature() {
   const currentFont = fonts[font];
 
   return (
-    <p className="text-title font-medium">
+    <p className="text-sm text-title font-medium">
       Developed by{" "}
       <a
         className={classNames(

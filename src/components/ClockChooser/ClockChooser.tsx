@@ -30,6 +30,7 @@ function ClockChooser() {
           isActive={"pomodoro" === type}
           handleClick={handleClick}
         />
+
         <Button
           name="shortBreak"
           text={"short break"}

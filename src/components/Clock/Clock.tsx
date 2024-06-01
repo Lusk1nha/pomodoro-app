@@ -1,15 +1,19 @@
 import classNames from "classnames";
 import { useClockStore } from "../../shared/stores/clock-store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
+import { Progress } from "./Progress";
 
-let interval: any;
+interface IClockProps {
+  minutes: number;
+  setMinutes: React.Dispatch<React.SetStateAction<number>>;
+  seconds: number;
+  setSeconds: React.Dispatch<React.SetStateAction<number>>;
+}
 
-function Clock() {
+function Clock(props: IClockProps) {
+  const { minutes, setMinutes, seconds, setSeconds } = props;
   const { state, type, modes, font, color, setState } = useClockStore();
-
-  const [count, setCount] = useState<number>((modes as any)[type] - 1);
-
-  const [seconds, setSeconds] = useState<number>(59);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fonts = {
     KumbhSans: "font-KumbhSans",
@@ -26,46 +30,51 @@ function Clock() {
   const currentColor = colors[color];
   const currentFont = fonts[font];
 
-  useEffect(() => {
-    const newCount = (modes as any)[type];
-    setCount(newCount - 1);
-  }, [type, modes]);
+  const progress = ((minutes * 60 + seconds) / (modes[type] * 60)) * 100;
+
+  const tick = useCallback(() => {
+    setSeconds((prevSeconds) => {
+      if (prevSeconds === 0) {
+        if (minutes === 0) {
+          clearInterval(intervalRef.current!);
+          setState("finished");
+          return 0; // Defina os segundos como 0 quando chegar a 0
+        } else {
+          setMinutes((prevMinutes) => prevMinutes - 1); // Reduza os minutos em 1
+          return 59; // Redefina os segundos para 59
+        }
+      } else {
+        return prevSeconds - 1;
+      }
+    });
+  }, [minutes, setMinutes, setState]);
 
   useEffect(() => {
     if (state === "running") {
-      interval = setInterval(() => {
-        if (count === 0 && seconds === 0) {
-          setState("finished");
-          return () => clearInterval(interval);
-        }
-
-        if (seconds === 0) {
-          setCount((c) => c - 1);
-          setSeconds(59);
-        } else {
-          setSeconds((s) => s - 1);
-        }
-      }, 1000);
+      intervalRef.current = setInterval(tick, 1000); // Ajustado para 1000ms (1s)
+    } else {
+      clearInterval(intervalRef.current!);
+      intervalRef.current = null;
     }
 
-    if (state === "paused" || state === "finished") {
-      clearInterval(interval);
-    }
-
-    return () => clearInterval(interval);
-  }, [state, seconds, count]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [state, tick]);
 
   function handleState() {
     if (state === "running") {
-      return setState("paused");
+      setState("paused");
+    } else if (state === "finished") {
+      setMinutes(modes[type]);
+      setSeconds(0);
+      setState("running");
+    } else {
+      setState("running");
     }
-
-    if (state === "finished") {
-      setCount((modes as any)[type] - 1);
-      return setState("running");
-    }
-
-    setState("running");
   }
 
   return (
@@ -82,7 +91,7 @@ function Clock() {
               currentFont ? currentFont : ""
             )}
           >
-            {String(count).padStart(2, "0") +
+            {String(minutes).padStart(2, "0") +
               ":" +
               String(seconds).padStart(2, "0")}
           </h3>
@@ -97,9 +106,11 @@ function Clock() {
             {state === "finished"
               ? "restart"
               : state === "running"
-              ? "Pause"
+              ? "pause"
               : "start"}
           </p>
+
+          <Progress total={progress <= 0 ? 100 : progress} />
         </div>
       </button>
     </section>
